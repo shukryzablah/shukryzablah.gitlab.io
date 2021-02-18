@@ -1,0 +1,10 @@
+// -*- mode: web -*-
+
+{namespace coleslaw.theme.shukry}
+
+{template index}
+{foreach $obj in $index.content}
+<h1>{$obj.title}</h1>
+    {$obj.excerpt | noAutoescape}
+{/foreach}
+{/template}

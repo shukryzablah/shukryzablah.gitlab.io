@@ -1,0 +1,11 @@
+image:
+  name: fukamachi/sbcl:2.0.9-debian
+  entrypoint: [""]
+
+pages:
+  script:
+    - ros install coleslaw-cli
+    - coleslaw stage
+  artifacts:
+    paths:
+      - public
