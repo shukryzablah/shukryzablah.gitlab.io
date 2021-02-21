@@ -31,7 +31,8 @@
            ;; default deploy method is rsync
            (rsync "-avz" "--delete" "--exclude" ".git/" "--exclude" ".gitignore" "--copy-links")
           )
- :sitenav ((:url "http://github.com/shukryzablah" :name "Github"))
+ :sitenav ((:url "https://github.com/shukryzablah" :name "Github")
+           (:url "https://www.linkedin.com/in/shukryzablah/" :name "LinkedIn"))
  :staging-dir "public/"  ;; for Coleslaw to do intermediate work, default: "/tmp/coleslaw"
 )
 
