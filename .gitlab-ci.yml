@@ -4,6 +4,7 @@ image:
 
 pages:
   script:
+    - apt-get install rsync
     - ros install coleslaw-cli
     - coleslaw stage
   artifacts:
