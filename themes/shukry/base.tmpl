@@ -7,10 +7,12 @@
 
     <head>
         <meta charset="utf-8">
-        <title>Shukry Theme</title>
-        <meta name="author" content="Shukry Zablah">
+        <title>{$config.title}</title>
+        <meta name="author" content="{$config.author}">
         <meta name="description" content="Personal site of Shukry Zablah">
         <meta name="viewport" content="width=device-width, initial-scale=1">
+
+        <link href= "{$config.domain}/css/style.css" rel="stylesheet" type="text/css" />
     </head>
 
     <body>
@@ -26,9 +28,18 @@
             {/foreach}
 
         </nav>
-        <div id="content">
+
+        <header>
+            <h1> Shukry Zablah </h1>
+        </header>
+        
+        <main id="content">
             {$raw |noAutoescape}
-        </div>
+        </main>
+
+        <footer>
+            © 2020 - 2021 {$config.author}
+        </footer>
     </body>
 
 </html>

@@ -1,6 +1,6 @@
 ;;; -*- mode : lisp -*-
 (;; Required information
- :author "shukryzablah"                         ;; to be placed on post pages and in the copyright/CC-BY-SA notice
+ :author "Shukry Zablah"                         ;; to be placed on post pages and in the copyright/CC-BY-SA notice
  :deploy-dir "deploy/"                ;; for Coleslaw's generated HTML to go in
  :domain ""                           ;; to generate absolute links to the site content. Note: with :cname option of gh-pages, this requires a url scheme, e.g. https://fake.org 
  :routing ((:post           "posts/~a") ;; to determine the URL scheme of content on the site
@@ -9,7 +9,7 @@
            (:numeric-index  "~d")
            (:feed           "~a.xml")
            (:tag-feed       "tag/~a.xml"))
- :title "Improved Means for Achieving Deteriorated Ends" ;; a site title
+ :title "Shukry Zablah" ;; a site title
  :theme "shukry"                        ;; to select one of the themes in "coleslaw/themes/"
  
  ;; Optional information
@@ -31,11 +31,7 @@
            ;; default deploy method is rsync
            (rsync "-avz" "--delete" "--exclude" ".git/" "--exclude" ".gitignore" "--copy-links")
           )
- :sitenav ((:url "http://shukryzablah.github.com/" :name "Home")
-           (:url "http://twitter.com/shukryzablah" :name "Twitter")
-           (:url "http://github.com/shukryzablah" :name "Code")
-           (:url "http://soundcloud.com/shukryzablah" :name "Music")
-           (:url "http://redlinernotes.com/docs/talks/" :name "Talks"))
+ :sitenav ((:url "http://github.com/shukryzablah" :name "Github"))
  :staging-dir "public/"  ;; for Coleslaw to do intermediate work, default: "/tmp/coleslaw"
 )
 
