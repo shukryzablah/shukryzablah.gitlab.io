@@ -4,7 +4,7 @@
 
 {template index}
 {foreach $obj in $index.content}
-<h1>{$obj.title}</h1>
+<h1><a href="{$config.domain}/{$obj.url}">{$obj.title}</a></h1>
     {$obj.excerpt | noAutoescape}
 {/foreach}
 {/template}

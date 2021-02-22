@@ -1,0 +1,197 @@
+;;;;;
+title: 2021-02-21
+tags: lisp, coleslaw, roswell, docker, ci/cd
+date: 2021-02-21 14:23:03
+format: md
+;;;;;
+
+I used to use the Hugo static site generator for my personal site. I wanted to try to use [Coleslaw](https://github.com/coleslaw-org/coleslaw) instead. I am currently using Common Lisp for fun, so it makes sense to use Common Lisp tooling if possible. In this post I walk through how I set up my computer, my personal site, automatic deployment with Gitlab CI, and a custom theme.
+
+<!--more-->
+
+## Setting up my computer
+
+Before getting started with Coleslaw I needed to set up lisp in my computer. I use [Doom Emacs](https://github.com/hlissner/doom-emacs) as my editor, which has [Sly](https://github.com/joaotavora/sly) as its Common Lisp mode. I had previously set up an Arch Linux computer by installing and using the [SBCL](http://www.sbcl.org/) for that distro, but I thought I'd use [Roswell](https://github.com/roswell/roswell) instead. The primary reason was ease of use, but also because I wanted to use the same command line tool I would be using in my CI/CD pipeline. 
+
+Setting up with Roswell is extremely easy. I followed the instructions in the [wiki](https://github.com/roswell/roswell/wiki). It took care of downloading the [Quicklisp](https://www.quicklisp.org/beta/) library manager. I thought about using [Qlot](https://github.com/fukamachi/qlot) to have project local libraries, but it being my first time, learning to use it would have been an unecessary detour.
+
+At this point I installed Coleslaw in the REPL. 
+
+## Setting up Coleslaw site
+
+Getting started with Coleslaw was okay but not great. The [README](https://github.com/coleslaw-org/coleslaw/blob/master/README.md) was pleasant. However, for some reason I ran into a problem when using `(coleslaw-cli:preview)`. I kept getting "Not Found" from the [Hunchentoot](http://edicl.github.io/hunchentoot/) server. I tried changing to Woo, but it errored out (maybe this [issue](https://github.com/fukamachi/woo/issues/65)). For the beginning I had to use `python3 -m http.server`, but then I found out that the command `coleslaw preview` (and also `coleslaw watch-preview`) worked as expected, so I began using that. This was pretty annoying.
+
+## Writing a custom theme
+
+Coleslaw has very few themes out of the box, and frankly, they were ugly. The next step was to take away some of the defaults of the generated blog. I figured it would be easiest to start from scratch rather than to try to adopt an existing blog. That way I could build up the features I wanted little by little.
+
+Coleslaw uses closure templates, but I started off with the wrong foot by trying to go directly to their repository for an introduction. Instead I ended up following [Coleslaw's own instructions on creating themes](https://github.com/coleslaw-org/coleslaw/blob/master/docs/themes.md). 
+
+I ended up with these simple files: 
+
+`themes/shukry/base.tmpl`:
+
+```html
+// -*- mode: web -*-
+{namespace coleslaw.theme.shukry}
+
+{template base}
+<!DOCTYPE html>
+<html>
+
+    <head>
+        <meta charset="utf-8">
+        <title>{$config.title}</title>
+        <meta name="author" content="{$config.author}">
+        <meta name="description" content="Personal site of Shukry Zablah">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+        <link href= "{$config.domain}/css/style.css" rel="stylesheet" type="text/css" />
+    </head>
+
+    <body>
+        <nav>
+            <a href="{$config.domain}">{$config.title}</a> |
+            {foreach $link in $config.sitenav}
+            {if $link.relative}
+            <a href="{$config.domain}/{$link.url}">{$link.name}</a>
+            {else}
+            <a href="{$link.url}">{$link.name}</a>
+            {/if}
+            {if not isLast($link)} {sp}|{sp} {/if}
+            {/foreach}
+
+        </nav>
+
+        <header>
+            <h1> Shukry Zablah </h1>
+        </header>
+        
+        <main id="content">
+            {$raw |noAutoescape}
+        </main>
+
+        <footer>
+            © 2020 - 2021 {$config.author}
+        </footer>
+    </body>
+
+</html>
+{/template}
+```
+
+`themes/shukry/index.tmpl`:
+
+```html
+// -*- mode: web -*-
+
+{namespace coleslaw.theme.shukry}
+
+{template index}
+{foreach $obj in $index.content}
+<h1>{$obj.title}</h1>
+    {$obj.excerpt | noAutoescape}
+{/foreach}
+{/template}
+```
+
+
+`themes/shukry/post.tmpl`:
+
+```html
+// -*- mode: web -*-
+{namespace coleslaw.theme.shukry}
+
+{template post}
+<h1>{$post.title}</h1>
+{$post.text | noAutoescape}
+{/template}
+```
+
+So, simple start to a theme. I thought it nice to use some semantic tags in the template.
+
+But the thing that makes it good looking was the style file. I plan to include this in the theme (eventually making a PR to coleslaw). 
+
+`themes/shukry/css/style.css`
+
+```css
+@import 'https://fonts.googleapis.com/css?family=Roboto:300,400,500';
+
+body {
+    margin: 0 auto;
+    max-width: 50em;
+    padding: 4em 1em;
+    font-family: "Roboto", "Helvetica", "Arial", sans-serif;
+    line-height: 1.5;
+    color: #566b78;
+}
+
+h1,h2,strong {
+    color: #333;
+}
+
+h2 {
+    margin-top: 1em;
+    padding-top: 1em;
+}
+
+code, pre {
+    background: #f5f7f9;
+    border-bottom: 1px solid #d8dee9;
+    color: #a7adba;
+}
+
+code {
+    padding: 2px 4px;
+    vertical-align: text-bottom;
+}
+
+pre {
+    padding: 1em;
+    border-left: 2px solid #69c;
+}
+
+a {
+    color: #e81c4f;
+}
+
+header h1 {
+    font-size: 2.5em;
+    font-weight: 300;
+}
+```
+
+I disabled most of the plugins, changed the default sitenav, and selected my theme.
+
+
+## Writing a pipeline
+
+The last part of this post will be about the pipeline that I set up. I remembered from a few months ago I had created a Dockerfile with `roswell`, but that was mostly an exercise. I know that fukamachi has some Dockerfiles at https://github.com/fukamachi/dockerfiles, so I used one of those. I started with using `fukamachi/roswell` and was annoyed that it installed sbcl when it started. Then I realized I was being silly, and used `fukamachi/sbcl`, which takes care of that. However, I was running into problems, which I solved by overriding the entrypoint of the docker image.
+
+`.gitlab-ci.yml`:
+
+```yaml
+image:
+  name: fukamachi/sbcl:2.0.9-debian
+  entrypoint: [""]
+
+pages:
+  script:
+    - apt-get update
+    - apt-get --yes install rsync
+    - ros install coleslaw-cli
+    - coleslaw stage
+  artifacts:
+    paths:
+      - public
+```
+
+This small file will get things set up with gitlab pages. 
+
+## Conclusion
+
+Coleslaw was more fun to work with than Hugo, probably because it was in Common Lisp and I enjoyed reading into its source. I hope to contribute a more fleshed out theme as a PR soon, and I would like to have a netlify plugin for deployment if possible as another separate PR. 
+
+I ran into problems with the preview server, but that was solved. I ran into problems with the entrypoint, but that was also easily solved. I did run into issues using the pygments plugin.  Overall, a good experience though.
+
+I didn't speak much about the actual blog writing. You can use markdown or html (and with a plugin you can use another thing I think). 
