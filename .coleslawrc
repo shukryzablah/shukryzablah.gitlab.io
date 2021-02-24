@@ -16,6 +16,7 @@
  :excerpt-sep "<!--more-->"           ;; to set the separator for excerpt in content 
  :feeds ("lisp")
  :plugins (
+           (pygments) ; requires pygmentize cli in PATH; css must be provided in theme
            ; (analytics :tracking-code "foo")
            ; (disqus :shortname "my-site-name")
            ; (incremental)  ;; *Remove comment to enable incremental builds.
