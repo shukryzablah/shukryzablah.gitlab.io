@@ -2,11 +2,6 @@ default:
   image:
     name: fukamachi/sbcl:2.0.9-debian
     entrypoint: [""]
-  before_script: 
-    - apt-get update
-    - apt-get --yes install rsync python3 python3-pip
-    - python3 -m pip install Pygments
-    - ros install coleslaw-cli
 
 stages:
   - build
@@ -15,6 +10,10 @@ stages:
 build:
   stage: build
   script:
+    - apt-get update
+    - apt-get --yes install rsync python3 python3-pip
+    - python3 -m pip install Pygments
+    - ros install coleslaw-cli
     - coleslaw stage
   artifacts:
     paths:
