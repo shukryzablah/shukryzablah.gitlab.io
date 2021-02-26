@@ -2,7 +2,7 @@
 (;; Required information
  :author "Shukry Zablah"                         ;; to be placed on post pages and in the copyright/CC-BY-SA notice
  :deploy-dir "deploy/"                ;; for Coleslaw's generated HTML to go in
- :domain "shukryzablah.com"
+ :domain "https://shukryzablah.com"
  :routing ((:post           "posts/~a") ;; to determine the URL scheme of content on the site
            (:tag-index      "tag/~a")
            (:month-index    "date/~a")
