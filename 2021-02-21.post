@@ -192,6 +192,6 @@ This small file will get things set up with gitlab pages.
 
 Coleslaw was more fun to work with than Hugo, probably because it was in Common Lisp and I enjoyed reading into its source. I hope to contribute a more fleshed out theme as a PR soon, and I would like to have a netlify plugin for deployment if possible as another separate PR. 
 
-I ran into problems with the preview server, but that was solved. I ran into problems with the entrypoint, but that was also easily solved. I did run into issues using the pygments plugin.  Overall, a good experience though.
+I ran into problems with the preview server, but that was solved. I ran into problems with the entrypoint, but that was also easily solved. I did run into issues using the `pygments` plugin.  Overall, a good experience though.
 
 I didn't speak much about the actual blog writing. You can use markdown or html (and with a plugin you can use another thing I think). 

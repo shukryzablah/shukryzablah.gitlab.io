@@ -1,0 +1,90 @@
+;;;;;
+title: 2021-02-25
+tags: lisp, coleslaw, pygments, ci/cd
+date: 2021-02-25 22:05:43
+format: md
+;;;;;
+
+Last post I shared how I was able to set up a [Coleslaw](https://github.com/coleslaw-org/coleslaw)-generated static site, deployed on Gitlab Pages. You can check out the progress of this website in my [repository](https://gitlab.com/shukryzablah/shukryzablah.gitlab.io). 
+
+I had ran into problems using the `pygments` plugin for syntax highlighting in code blocks. In this short post I will walk through the few steps needed to resolve this.
+
+```scheme
+;; Syntax highlighting works fine!
+(define (eval exp env)
+  (cond ((self-evaluating? exp) exp)
+        ((variable? exp) (lookup-variable-value exp env))
+        ((quoted? exp) (text-of-quotation exp))
+        ((assignment? exp) (eval-assignment exp env))
+        ((definition? exp) (eval-definition exp env))
+        ((if? exp) (eval-if exp env))
+        ((lambda? exp)
+         (make-procedure (lambda-parameters exp)
+                         (lambda-body exp)
+                         env))
+        ((begin? exp) 
+         (eval-sequence (begin-actions exp) env))
+        ((cond? exp) (eval (cond->if exp) env))
+        ((application? exp)
+         (apply (eval (operator exp) env)
+                (list-of-values (operands exp) env)))
+        (else
+         (error "Unknown expression type - EVAL" exp))))
+```
+
+<!--more-->
+
+## Adding `pygments` plugin to site
+
+Coleslaw's plugin system is documented in its repository (https://github.com/coleslaw-org/coleslaw/blob/master/docs/plugin-use.md). However when I included it in my `.coleslawrc` file, I was getting an obscure error.
+
+![Screenshot of obscure file descriptor error.](https://shukryzablah.com/static/001-screenshot-of-error.png)
+
+It took me some time to figure out what was wrong. It turns out that I had not installed `Pygments` and the command `pygmentize` was thus not in my `PATH`. All I had to do was install that python package. This got `coleslaw stage` to work again.
+
+Great! However, while the site was properly generated, I still did not have syntax highlighting. One quick look at the source code in the browser devtools revealed that `pygments` was working though. I realized that while the `pygments` plugin properly prepared the code blocks for syntax highlighting, I still needed a css file to style the classes in the generated html. 
+
+As I thought, `Pygments` provides those styles. You can generate them through the command line, or you can get them from [this repository](https://github.com/richleland/pygments-css). 
+
+I chose `tango.css` because it reminded me of the code blocks coloring that `rmarkdown` has by default, and it went well with the current site colors. 
+
+That's all that was needed! Syntax coloring works fine with `pygments`. All that I had to do was make sure that my `.gitlab-ci.yml` file installed the necessary tools. Since I changed it a bit I'm including the new file here: 
+
+```yaml
+default:
+  image:
+    name: fukamachi/sbcl:2.0.9-debian
+    entrypoint: [""]
+
+stages:
+  - build
+  - pages
+  
+build:
+  stage: build
+  script:
+    - apt-get update
+    - apt-get --yes install rsync python3 python3-pip
+    - python3 -m pip install Pygments
+    - ros install coleslaw-cli
+    - coleslaw stage
+  artifacts:
+    paths:
+      - public
+
+pages:
+  stage: pages
+  script:
+    - ls public
+  artifacts:
+    paths:
+      - public
+  only:
+    - master
+```
+
+## Conclusion
+
+Using Coleslaw is fun because it is written in a language that I enjoy reading. However, it is a known fact that error reporting is not very good (although maybe the markdown processor should've caught this one). Overall, it pays off, the site looks better.
+
+I have included `tango.css` in my theme, and I have opened a [PR](https://github.com/coleslaw-org/coleslaw/pull/196) that tweaks the instructions so users can avoid this problem. 
