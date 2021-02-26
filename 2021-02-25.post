@@ -38,7 +38,7 @@ I had ran into problems using the `pygments` plugin for syntax highlighting in c
 
 Coleslaw's plugin system is documented in its repository (https://github.com/coleslaw-org/coleslaw/blob/master/docs/plugin-use.md). However when I included it in my `.coleslawrc` file, I was getting an obscure error.
 
-![Screenshot of obscure file descriptor error.](https://shukryzablah.com/static/001-screenshot-of-error.png)
+<img src="https://shukryzablah.com/static/001-screenshot-of-error.png" alt="Screenshot of obscure file descriptor error." width="300">
 
 It took me some time to figure out what was wrong. It turns out that I had not installed `Pygments` and the command `pygmentize` was thus not in my `PATH`. All I had to do was install that python package. This got `coleslaw stage` to work again.
 
