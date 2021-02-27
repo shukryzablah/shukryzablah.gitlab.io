@@ -1,5 +1,3 @@
-@import 'https://fonts.googleapis.com/css?family=Roboto:300,400,500';
-
 body {
     margin: 0 auto;
     max-width: 50em;
@@ -7,6 +5,7 @@ body {
     font-family: "Roboto", "Helvetica", "Arial", sans-serif;
     line-height: 1.5;
     color: #566b78;
+    text-align: justify;
 }
 
 h1,h2,strong {
@@ -26,8 +25,14 @@ code {
 }
 
 pre {
+    overflow: scroll;
     padding: 1em;
     border-left: 2px solid #69c;
+}
+
+img {
+    display: block;
+    margin: auto;
 }
 
 a {
