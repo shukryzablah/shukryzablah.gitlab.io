@@ -17,7 +17,8 @@
  :feeds ("lisp")
  :plugins (
            (pygments) ; requires pygmentize cli in PATH; css must be provided in theme
-           ; (analytics :tracking-code "foo")
+           ;(analytics :tracking-code "G-Y9FVZ6QWMW")
+           (gtag :tracking-code "G-Y9FVZ6QWMW")
            ; (disqus :shortname "my-site-name")
            ; (incremental)  ;; *Remove comment to enable incremental builds.
            ; (mathjax)

@@ -16,6 +16,11 @@
         <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500&display=swap" rel="stylesheet"> 
         <link href= "{$config.domain}/css/tango.css" rel="stylesheet" type="text/css" />
         <link href= "{$config.domain}/css/style.css" rel="stylesheet" type="text/css" />
+        {if $injections.head}
+            {foreach $injection in $injections.head}
+                {$injection | noAutoescape}
+            {/foreach}
+        {/if}
     </head>
 
     <body>
@@ -43,6 +48,13 @@
         <footer>
             © 2020 - 2021 {$config.author}
         </footer>
+
+        {if $injections.body}
+            {foreach $injection in $injections.body}
+                {$injection | noAutoescape}
+            {/foreach}
+        {/if}
+
     </body>
 
 </html>
