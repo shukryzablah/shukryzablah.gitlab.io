@@ -18,7 +18,7 @@
  :plugins (
            (pygments) ; requires pygmentize cli in PATH; css must be provided in theme
            ;(analytics :tracking-code "G-Y9FVZ6QWMW")
-           (gtag :tracking-code "G-Y9FVZ6QWMW")
+           (gtag :tracking-code "G-62K262XDV3")
            ; (disqus :shortname "my-site-name")
            ; (incremental)  ;; *Remove comment to enable incremental builds.
            ; (mathjax)
